@@ -1,0 +1,278 @@
+.history-panel-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #3a3a3a;
+  border: 1px solid #4a4a4a;
+  color: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.history-panel-btn:hover {
+  background: #4a4a4a;
+  border-color: #646cff;
+}
+
+.history-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.history-modal {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.modal-header .close-btn,
+.clear-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 4px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.modal-header .close-btn:hover {
+  background: #3a3a3a;
+}
+
+.clear-btn {
+  color: #f44336;
+}
+
+.clear-btn:hover {
+  background: #3a3a3a;
+  color: #ff6666;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+}
+
+.history-empty svg {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.history-empty p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.empty-hint {
+  font-size: 12px;
+  color: #666;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item {
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+
+.history-item:hover {
+  border-color: #646cff;
+  background: #252525;
+}
+
+.history-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.history-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-icon {
+  flex-shrink: 0;
+}
+
+.status-icon.success {
+  color: #4caf50;
+}
+
+.status-icon.error {
+  color: #f44336;
+}
+
+.status-icon.cancelled {
+  color: #ff9800;
+}
+
+.workflow-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.delete-history-btn {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-history-btn:hover {
+  background: #3a3a3a;
+  color: #f44336;
+}
+
+.history-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: #888;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-item span:not(:last-child) {
+  margin-right: 4px;
+}
+
+.history-logs-preview {
+  background: #0a0a0a;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.logs-count {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.logs-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  padding: 4px 0;
+}
+
+.log-level {
+  font-weight: 600;
+  text-transform: uppercase;
+  min-width: 50px;
+  font-size: 10px;
+}
+
+.log-preview.log-info .log-level {
+  color: #2196f3;
+}
+
+.log-preview.log-success .log-level {
+  color: #4caf50;
+}
+
+.log-preview.log-warning .log-level {
+  color: #ff9800;
+}
+
+.log-preview.log-error .log-level {
+  color: #f44336;
+}
+
+.log-message {
+  color: #888;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logs-more {
+  font-size: 10px;
+  color: #666;
+  font-style: italic;
+  margin-top: 4px;
+}
+
