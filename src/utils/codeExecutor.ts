@@ -66,19 +66,17 @@ export class CodeExecutor {
       const hasReturn = /\breturn\b/.test(code);
       
       // 코드를 함수로 감싸서 실행
-      const wrappedCode = hasReturn
-        ? `
-          (function() {
-            ${code}
-          })();
-        `
-        : `
-          (function() {
-            ${code}
-            return { success: true, executed: true };
-          })();
-        `;
+      // return이 있으면 그대로 실행, 없으면 기본 반환값 추가
+      let wrappedCode: string;
+      if (hasReturn) {
+        // return이 있으면 코드를 그대로 실행
+        wrappedCode = code;
+      } else {
+        // return이 없으면 기본 반환값 추가
+        wrappedCode = `${code}\nreturn { success: true, executed: true };`;
+      }
 
+      // 함수 본문으로 사용
       const func = new Function(
         ...Object.keys(context),
         wrappedCode
@@ -87,8 +85,13 @@ export class CodeExecutor {
       const result = func(...Object.values(context));
       
       // 결과가 undefined인 경우 처리
+      // 이는 return 문이 있지만 실제로 값이 반환되지 않은 경우
       if (result === undefined) {
-        return { success: true, message: '코드가 실행되었지만 반환값이 없습니다.' };
+        return { 
+          success: true, 
+          message: '코드가 실행되었지만 반환값이 없습니다.',
+          hint: '코드에 return 문이 있지만 undefined가 반환되었습니다. return 문에 명시적인 값을 지정해주세요.'
+        };
       }
       
       return result;

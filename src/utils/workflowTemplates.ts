@@ -182,6 +182,16 @@ return { score, passed: score >= 60 };`,
           label: '데이터 가공',
           language: 'javascript',
           code: `// API 응답 데이터 가공
+// input이 객체인지 확인
+if (!input || typeof input !== 'object') {
+  return {
+    title: '제목 없음',
+    body: '',
+    wordCount: 0,
+    excerpt: '데이터를 가져올 수 없습니다.'
+  };
+}
+
 const summary = {
   title: input.title || '제목 없음',
   body: input.body || '',
@@ -858,6 +868,17 @@ return {
           label: '날씨 분석',
           language: 'javascript',
           code: `// 날씨 데이터 분석
+// input이 객체인지 확인
+if (!input || typeof input !== 'object') {
+  return {
+    weather: 'Clear',
+    temp: 20,
+    description: '맑음',
+    activityType: 'outdoor',
+    summary: '날씨 데이터를 가져올 수 없습니다. 기본값을 사용합니다.'
+  };
+}
+
 const weather = input.weather?.[0]?.main || 'Clear';
 const temp = input.main?.temp || 20;
 const description = input.weather?.[0]?.description || '맑음';
@@ -1226,7 +1247,9 @@ return {
           label: '일정 생성',
           language: 'javascript',
           code: `// 할 일 목록을 기반으로 일정 생성
-const tasks = input.match(/\\d+\\.\\s*([^\\n]+)/g) || [];
+// input이 문자열인지 확인
+const inputText = typeof input === 'string' ? input : JSON.stringify(input);
+const tasks = inputText.match(/\\d+\\.\\s*([^\\n]+)/g) || [];
 const schedule = tasks.map((task, index) => ({
   id: index + 1,
   task: task.replace(/^\\d+\\.\\s*/, ''),
