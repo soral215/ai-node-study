@@ -181,6 +181,10 @@
   border-color: #ffc107;
 }
 
+.image-node {
+  border-color: #9b59b6;
+}
+
 .node-header {
   display: flex;
   align-items: center;

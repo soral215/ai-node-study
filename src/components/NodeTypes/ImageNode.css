@@ -1,0 +1,14 @@
+.image-node {
+  background: #2a2a2a;
+  border: 2px solid #9b59b6;
+  border-radius: 8px;
+  min-width: 150px;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(155, 89, 182, 0.3);
+}
+
+.image-node:hover {
+  border-color: #bb6bd9;
+  box-shadow: 0 4px 12px rgba(155, 89, 182, 0.5);
+}
+

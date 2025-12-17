@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
-import { Position } from 'reactflow';
 import { useWorkflowStore } from '../../stores/workflowStore';
-import { Play, Brain, Globe, Code, GitBranch, Square } from 'lucide-react';
+import { Play, Brain, Globe, Code, GitBranch, Image as ImageIcon, Square } from 'lucide-react';
 
 interface NodeTemplate {
   type: string;
@@ -55,6 +54,19 @@ const nodeTemplates: NodeTemplate[] = [
     defaultData: {
       label: '조건',
       condition: '',
+    },
+  },
+  {
+    type: 'image',
+    label: 'Image',
+    icon: <ImageIcon size={16} />,
+    defaultData: {
+      label: 'Image',
+      provider: 'dalle',
+      prompt: '',
+      size: '1024x1024',
+      quality: 'standard',
+      n: 1,
     },
   },
   {

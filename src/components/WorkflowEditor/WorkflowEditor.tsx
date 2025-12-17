@@ -18,6 +18,7 @@ import { LLMNode } from '../NodeTypes/LLMNode';
 import { APINode } from '../NodeTypes/APINode';
 import { FunctionNode } from '../NodeTypes/FunctionNode';
 import { ConditionNode } from '../NodeTypes/ConditionNode';
+import { ImageNode } from '../NodeTypes/ImageNode';
 import { EndNode } from '../NodeTypes/EndNode';
 
 const nodeTypes: NodeTypes = {
@@ -26,6 +27,7 @@ const nodeTypes: NodeTypes = {
   api: APINode,
   function: FunctionNode,
   condition: ConditionNode,
+  image: ImageNode,
   end: EndNode,
 };
 

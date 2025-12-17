@@ -53,7 +53,35 @@ export const NodeResultViewer = ({ nodeId, onClose }: NodeResultViewerProps) => 
           </div>
         </div>
         <div className="result-viewer-content">
-          {typeof result === 'string' ? (
+          {result.images && Array.isArray(result.images) ? (
+            <div className="result-images">
+              {result.images.map((imageUrl: string, index: number) => (
+                <div key={index} className="image-item">
+                  <img src={imageUrl} alt={`Generated image ${index + 1}`} className="generated-image" />
+                  <div className="image-actions">
+                    <a href={imageUrl} download={`image-${index + 1}.png`} className="download-btn">
+                      다운로드
+                    </a>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(imageUrl);
+                        alert('이미지 URL이 클립보드에 복사되었습니다.');
+                      }}
+                      className="copy-url-btn"
+                    >
+                      URL 복사
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {result.revisedPrompt && (
+                <div className="revised-prompt">
+                  <strong>수정된 프롬프트:</strong>
+                  <p>{result.revisedPrompt}</p>
+                </div>
+              )}
+            </div>
+          ) : typeof result === 'string' ? (
             <div className="result-text">{result}</div>
           ) : (
             <pre className="result-json">{resultString}</pre>

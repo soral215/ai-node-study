@@ -5,6 +5,7 @@ export const NodeType = {
   API: 'api',
   FUNCTION: 'function',
   CONDITION: 'condition',
+  IMAGE: 'image',
   END: 'end',
 } as const;
 
@@ -38,6 +39,14 @@ export interface FunctionNodeData extends BaseNodeData {
 
 export interface ConditionNodeData extends BaseNodeData {
   condition: string;
+}
+
+export interface ImageNodeData extends BaseNodeData {
+  provider: 'dalle' | 'stable-diffusion';
+  prompt: string;
+  size?: '256x256' | '512x512' | '1024x1024' | '1024x1792' | '1792x1024';
+  quality?: 'standard' | 'hd';
+  n?: number; // 생성할 이미지 개수
 }
 
 // 워크플로우 실행 상태

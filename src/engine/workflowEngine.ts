@@ -1,8 +1,9 @@
 import type { Node, Edge } from 'reactflow';
 import { useWorkflowStore } from '../stores/workflowStore';
 import { useExecutionStore } from '../stores/executionStore';
-import type { ExecutionLog, LLMNodeData, ConditionNodeData, FunctionNodeData } from '../types';
+import type { ExecutionLog, LLMNodeData, ConditionNodeData, FunctionNodeData, ImageNodeData } from '../types';
 import { llmService } from '../services/llmService';
+import { imageService } from '../services/imageService';
 import { CodeExecutor } from '../utils/codeExecutor';
 import { resolveVariables } from '../utils/variableResolver';
 
@@ -80,6 +81,9 @@ class WorkflowEngine {
           break;
         case 'condition':
           output = await this.executeConditionNode(node, previousOutput);
+          break;
+        case 'image':
+          output = await this.executeImageNode(node, previousOutput);
           break;
         case 'end':
           output = await this.executeEndNode(node);
@@ -297,6 +301,55 @@ class WorkflowEngine {
       
       const errorMessage = error.message || error.toString() || '알 수 없는 오류';
       throw new Error(`함수 실행 실패: ${errorMessage}`);
+    }
+  }
+
+  private async executeImageNode(node: Node, previousOutput: any): Promise<any> {
+    const store = useWorkflowStore.getState();
+    const data = node.data as ImageNodeData;
+
+    if (!data.provider) {
+      throw new Error('이미지 생성 제공자가 설정되지 않았습니다.');
+    }
+
+    if (!data.prompt) {
+      throw new Error('프롬프트가 설정되지 않았습니다.');
+    }
+
+    store.addLog({
+      level: 'info',
+      nodeId: node.id,
+      message: `이미지 생성: ${data.provider}`,
+    });
+
+    try {
+      // 이전 노드의 출력이 있으면 프롬프트에 포함
+      let prompt = data.prompt || '';
+      if (previousOutput) {
+        const previousText = typeof previousOutput === 'string' 
+          ? previousOutput 
+          : JSON.stringify(previousOutput);
+        prompt = prompt ? `${prompt}\n\n참고: ${previousText}` : previousText;
+      }
+
+      // 변수 해석
+      prompt = resolveVariables(prompt, { input: previousOutput });
+
+      const response = await imageService.generateImage(data, prompt);
+      
+      store.addLog({
+        level: 'success',
+        nodeId: node.id,
+        message: `${response.images.length}개의 이미지 생성 완료`,
+        data: {
+          images: response.images,
+          revisedPrompt: response.revisedPrompt,
+        },
+      });
+
+      return response;
+    } catch (error: any) {
+      throw new Error(`이미지 생성 실패: ${error.message}`);
     }
   }
 

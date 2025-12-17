@@ -106,3 +106,71 @@
   justify-content: flex-end;
 }
 
+.result-images {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.image-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.generated-image {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #3a3a3a;
+  background: #1a1a1a;
+}
+
+.image-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.download-btn,
+.copy-url-btn {
+  padding: 6px 12px;
+  background: #3a3a3a;
+  border: 1px solid #4a4a4a;
+  color: #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+}
+
+.download-btn:hover,
+.copy-url-btn:hover {
+  background: #4a4a4a;
+  border-color: #646cff;
+  color: #8884ff;
+}
+
+.revised-prompt {
+  margin-top: 16px;
+  padding: 12px;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.revised-prompt strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #cccccc;
+}
+
+.revised-prompt p {
+  margin: 0;
+  color: #888;
+  line-height: 1.5;
+}
+
