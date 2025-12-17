@@ -1510,6 +1510,293 @@ return {
       },
     ],
   },
+  {
+    name: 'LLM으로 이미지 프롬프트 생성 후 이미지 생성',
+    description: 'LLM이 이미지 프롬프트를 생성하고, 그 프롬프트로 이미지를 생성하는 워크플로우',
+    nodes: [
+      {
+        id: 'start-1',
+        type: 'start',
+        position: { x: 250, y: 50 },
+        data: { label: '시작' },
+      },
+      {
+        id: 'function-1',
+        type: 'function',
+        position: { x: 250, y: 150 },
+        data: {
+          label: '주제 설정',
+          language: 'javascript',
+          code: `// 이미지를 생성할 주제
+return {
+  topic: '미래의 도시',
+  style: '사이버펑크',
+  mood: '신비롭고 밝은'
+};`,
+        },
+      },
+      {
+        id: 'llm-1',
+        type: 'llm',
+        position: { x: 250, y: 300 },
+        data: {
+          label: '이미지 프롬프트 생성',
+          provider: 'openai',
+          model: 'gpt-4',
+          prompt: '다음 주제를 바탕으로 DALL-E 3로 이미지를 생성하기 위한 상세하고 구체적인 프롬프트를 영어로 작성해주세요:\n\n주제: {{input.topic}}\n스타일: {{input.style}}\n분위기: {{input.mood}}\n\n프롬프트는 명확하고 구체적이어야 하며, 시각적 요소를 자세히 설명해주세요. 프롬프트만 출력해주세요.',
+          temperature: 0.8,
+          maxTokens: 500,
+        },
+      },
+      {
+        id: 'image-1',
+        type: 'image',
+        position: { x: 250, y: 450 },
+        data: {
+          label: '이미지 생성',
+          provider: 'dalle',
+          prompt: '{{input}}',
+          size: '1024x1024',
+          quality: 'hd',
+          n: 1,
+        },
+      },
+      {
+        id: 'end-1',
+        type: 'end',
+        position: { x: 250, y: 600 },
+        data: { label: '종료' },
+      },
+    ],
+    edges: [
+      {
+        id: 'e1',
+        source: 'start-1',
+        target: 'function-1',
+      },
+      {
+        id: 'e2',
+        source: 'function-1',
+        target: 'llm-1',
+      },
+      {
+        id: 'e3',
+        source: 'llm-1',
+        target: 'image-1',
+      },
+      {
+        id: 'e4',
+        source: 'image-1',
+        target: 'end-1',
+      },
+    ],
+  },
+  {
+    name: '텍스트 분석 후 이미지 생성',
+    description: '텍스트를 분석하여 키워드를 추출하고, 그 키워드로 이미지를 생성하는 워크플로우',
+    nodes: [
+      {
+        id: 'start-1',
+        type: 'start',
+        position: { x: 250, y: 50 },
+        data: { label: '시작' },
+      },
+      {
+        id: 'function-1',
+        type: 'function',
+        position: { x: 250, y: 150 },
+        data: {
+          label: '텍스트 입력',
+          language: 'javascript',
+          code: `// 분석할 텍스트
+return {
+  text: '한국의 전통 한옥과 현대적인 건축이 조화를 이루는 미래 도시. 벚꽃이 만개한 봄날, 태양이 따뜻하게 비추는 오후.'
+};`,
+        },
+      },
+      {
+        id: 'llm-1',
+        type: 'llm',
+        position: { x: 250, y: 300 },
+        data: {
+          label: '텍스트 분석 및 프롬프트 생성',
+          provider: 'openai',
+          model: 'gpt-4',
+          prompt: '다음 텍스트를 분석하여 이미지 생성에 적합한 상세한 프롬프트를 영어로 작성해주세요:\n\n{{input.text}}\n\n프롬프트는 시각적 요소, 색상, 분위기, 구도를 자세히 설명해야 합니다. 프롬프트만 출력해주세요.',
+          temperature: 0.7,
+          maxTokens: 600,
+        },
+      },
+      {
+        id: 'image-1',
+        type: 'image',
+        position: { x: 250, y: 450 },
+        data: {
+          label: '이미지 생성',
+          provider: 'dalle',
+          prompt: '{{input}}',
+          size: '1024x1024',
+          quality: 'hd',
+          n: 1,
+        },
+      },
+      {
+        id: 'end-1',
+        type: 'end',
+        position: { x: 250, y: 600 },
+        data: { label: '종료' },
+      },
+    ],
+    edges: [
+      {
+        id: 'e1',
+        source: 'start-1',
+        target: 'function-1',
+      },
+      {
+        id: 'e2',
+        source: 'function-1',
+        target: 'llm-1',
+      },
+      {
+        id: 'e3',
+        source: 'llm-1',
+        target: 'image-1',
+      },
+      {
+        id: 'e4',
+        source: 'image-1',
+        target: 'end-1',
+      },
+    ],
+  },
+  {
+    name: '조건부 이미지 생성',
+    description: '조건에 따라 다른 스타일의 이미지를 생성하는 워크플로우',
+    nodes: [
+      {
+        id: 'start-1',
+        type: 'start',
+        position: { x: 250, y: 50 },
+        data: { label: '시작' },
+      },
+      {
+        id: 'function-1',
+        type: 'function',
+        position: { x: 250, y: 150 },
+        data: {
+          label: '시간대 설정',
+          language: 'javascript',
+          code: `// 현재 시간대에 따라 이미지 스타일 결정
+const hour = new Date().getHours();
+const timeOfDay = hour >= 6 && hour < 12 ? 'morning' : 
+                  hour >= 12 && hour < 18 ? 'afternoon' : 
+                  hour >= 18 && hour < 22 ? 'evening' : 'night';
+
+return {
+  timeOfDay,
+  hour,
+  style: timeOfDay === 'morning' ? '밝고 생기있는' : 
+         timeOfDay === 'afternoon' ? '활기찬' : 
+         timeOfDay === 'evening' ? '따뜻한' : '신비로운'
+};`,
+        },
+      },
+      {
+        id: 'condition-1',
+        type: 'condition',
+        position: { x: 250, y: 300 },
+        data: {
+          label: '시간대 확인',
+          condition: "input.timeOfDay === 'morning' || input.timeOfDay === 'afternoon'",
+        },
+      },
+      {
+        id: 'llm-day',
+        type: 'llm',
+        position: { x: 100, y: 450 },
+        data: {
+          label: '낮 프롬프트',
+          provider: 'openai',
+          model: 'gpt-4',
+          prompt: '{{input.style}} 낮 시간대의 도시 풍경을 묘사하는 상세한 이미지 프롬프트를 영어로 작성해주세요. 밝은 햇살, 활기찬 거리, 파란 하늘을 포함해주세요. 프롬프트만 출력해주세요.',
+          temperature: 0.8,
+          maxTokens: 400,
+        },
+      },
+      {
+        id: 'llm-night',
+        type: 'llm',
+        position: { x: 400, y: 450 },
+        data: {
+          label: '밤 프롬프트',
+          provider: 'openai',
+          model: 'gpt-4',
+          prompt: '{{input.style}} 밤 시간대의 도시 풍경을 묘사하는 상세한 이미지 프롬프트를 영어로 작성해주세요. 네온사인, 별이 빛나는 하늘, 따뜻한 조명을 포함해주세요. 프롬프트만 출력해주세요.',
+          temperature: 0.8,
+          maxTokens: 400,
+        },
+      },
+      {
+        id: 'image-1',
+        type: 'image',
+        position: { x: 250, y: 600 },
+        data: {
+          label: '이미지 생성',
+          provider: 'dalle',
+          prompt: '{{input}}',
+          size: '1024x1024',
+          quality: 'hd',
+          n: 1,
+        },
+      },
+      {
+        id: 'end-1',
+        type: 'end',
+        position: { x: 250, y: 750 },
+        data: { label: '종료' },
+      },
+    ],
+    edges: [
+      {
+        id: 'e1',
+        source: 'start-1',
+        target: 'function-1',
+      },
+      {
+        id: 'e2',
+        source: 'function-1',
+        target: 'condition-1',
+      },
+      {
+        id: 'e3',
+        source: 'condition-1',
+        target: 'llm-day',
+        sourceHandle: 'true',
+      },
+      {
+        id: 'e4',
+        source: 'condition-1',
+        target: 'llm-night',
+        sourceHandle: 'false',
+      },
+      {
+        id: 'e5',
+        source: 'llm-day',
+        target: 'image-1',
+      },
+      {
+        id: 'e6',
+        source: 'llm-night',
+        target: 'image-1',
+      },
+      {
+        id: 'e7',
+        source: 'image-1',
+        target: 'end-1',
+      },
+    ],
+  },
 ];
 
 /**
