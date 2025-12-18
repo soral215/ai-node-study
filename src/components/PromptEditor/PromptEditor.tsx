@@ -81,7 +81,7 @@ export const PromptEditor = ({ value, onChange, nodeId, placeholder = '프롬프
   };
 
   // 이전 노드 출력 삽입
-  const insertPreviousOutput = (nodeId: string) => {
+  const insertPreviousOutput = () => {
     insertVariable(`input`);
   };
 
@@ -150,7 +150,7 @@ export const PromptEditor = ({ value, onChange, nodeId, placeholder = '프롬프
                   <button
                     key={node.id}
                     className={`variable-item ${hasResult ? 'has-result' : ''}`}
-                    onClick={() => insertPreviousOutput(node.id)}
+                    onClick={() => insertPreviousOutput()}
                     title={hasResult ? '실행 결과 있음' : '아직 실행되지 않음'}
                   >
                     <span className="variable-label">{node.data?.label || node.type}</span>
@@ -195,10 +195,7 @@ export const PromptEditor = ({ value, onChange, nodeId, placeholder = '프롬프
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
-          setCursorPosition(e.target.selectionStart);
         }}
-        onFocus={(e) => setCursorPosition(e.target.selectionStart)}
-        onClick={(e) => setCursorPosition((e.target as HTMLTextAreaElement).selectionStart)}
         placeholder={placeholder}
         rows={rows}
         className="prompt-textarea"
