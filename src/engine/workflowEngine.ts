@@ -1,7 +1,7 @@
 import type { Node, Edge } from 'reactflow';
 import { useWorkflowStore } from '../stores/workflowStore';
 import { useExecutionStore } from '../stores/executionStore';
-import type { ExecutionLog, LLMNodeData, ConditionNodeData, FunctionNodeData, ImageNodeData } from '../types';
+import type { LLMNodeData, ConditionNodeData, FunctionNodeData, ImageNodeData } from '../types';
 import { llmService } from '../services/llmService';
 import { imageService } from '../services/imageService';
 import { CodeExecutor } from '../utils/codeExecutor';

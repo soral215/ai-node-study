@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useWorkflowStore } from '../../stores/workflowStore';
 import { useVariableStore } from '../../stores/variableStore';
 import { useExecutionStore } from '../../stores/executionStore';
@@ -25,7 +25,6 @@ const PROMPT_TEMPLATES = [
 export const PromptEditor = ({ value, onChange, nodeId, placeholder = '프롬프트를 입력하세요...', rows = 6 }: PromptEditorProps) => {
   const [showVariables, setShowVariables] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { nodes, edges } = useWorkflowStore();
   const { global, workflow } = useVariableStore();
@@ -35,7 +34,7 @@ export const PromptEditor = ({ value, onChange, nodeId, placeholder = '프롬프
   const previousNodes = edges
     .filter(edge => edge.target === nodeId)
     .map(edge => nodes.find(n => n.id === edge.source))
-    .filter(Boolean);
+    .filter((node): node is NonNullable<typeof node> => node !== undefined);
 
   // 사용 가능한 변수 목록
   const availableVariables = [
@@ -82,16 +81,8 @@ export const PromptEditor = ({ value, onChange, nodeId, placeholder = '프롬프
   };
 
   // 이전 노드 출력 삽입
-  const insertPreviousOutput = (nodeId: string, nodeLabel: string) => {
-    const nodeState = nodeStates[nodeId];
-    if (nodeState?.result) {
-      const resultPreview = typeof nodeState.result === 'string' 
-        ? nodeState.result.substring(0, 100)
-        : JSON.stringify(nodeState.result).substring(0, 100);
-      insertVariable(`input`);
-    } else {
-      insertVariable(`input`);
-    }
+  const insertPreviousOutput = (nodeId: string) => {
+    insertVariable(`input`);
   };
 
   return (
@@ -159,11 +150,11 @@ export const PromptEditor = ({ value, onChange, nodeId, placeholder = '프롬프
                   <button
                     key={node.id}
                     className={`variable-item ${hasResult ? 'has-result' : ''}`}
-                    onClick={() => insertPreviousOutput(node.id, node.data.label || node.type)}
+                    onClick={() => insertPreviousOutput(node.id)}
                     title={hasResult ? '실행 결과 있음' : '아직 실행되지 않음'}
                   >
-                    <span className="variable-label">{node.data.label || node.type}</span>
-                    {hasResult && (
+                    <span className="variable-label">{node.data?.label || node.type}</span>
+                    {hasResult && nodeState && (
                       <span className="variable-preview">
                         {typeof nodeState.result === 'string'
                           ? nodeState.result.substring(0, 30) + '...'

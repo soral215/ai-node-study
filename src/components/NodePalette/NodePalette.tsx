@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useWorkflowStore } from '../../stores/workflowStore';
 import { Play, Brain, Globe, Code, GitBranch, Image as ImageIcon, Square } from 'lucide-react';
 
 interface NodeTemplate {
@@ -78,8 +77,6 @@ const nodeTemplates: NodeTemplate[] = [
 ];
 
 export const NodePalette = () => {
-  const { addNode } = useWorkflowStore();
-
   const onDragStart = useCallback(
     (event: React.DragEvent, nodeType: string, defaultData: any) => {
       event.dataTransfer.setData('application/reactflow', JSON.stringify({ type: nodeType, data: defaultData }));

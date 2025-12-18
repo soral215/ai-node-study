@@ -155,10 +155,12 @@
   border-radius: 8px;
   min-width: 150px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  overflow: visible; /* border가 잘리지 않도록 */
 }
 
 .start-node {
   border-color: #4caf50;
+  padding-bottom: 4px; /* Handle을 위한 여백 추가 */
 }
 
 .end-node {
@@ -494,6 +496,7 @@
 /* ReactFlow 스타일 오버라이드 */
 .react-flow__node {
   cursor: pointer;
+  overflow: visible; /* 노드의 border가 잘리지 않도록 */
 }
 
 .react-flow__handle {
@@ -509,6 +512,7 @@
 
 .react-flow__handle-bottom {
   bottom: -4px;
+  z-index: 10; /* border 위에 표시 */
 }
 
 .react-flow__edge-path {
