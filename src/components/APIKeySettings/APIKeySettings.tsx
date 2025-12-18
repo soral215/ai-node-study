@@ -8,9 +8,13 @@ export const APIKeySettings = () => {
     openaiApiKey,
     anthropicApiKey,
     geminiApiKey,
+    replicateApiKey,
+    grokApiKey,
     setOpenAIApiKey,
     setAnthropicApiKey,
     setGeminiApiKey,
+    setReplicateApiKey,
+    setGrokApiKey,
   } = useAPIKeyStore();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +22,8 @@ export const APIKeySettings = () => {
     openai: false,
     anthropic: false,
     gemini: false,
+    replicate: false,
+    grok: false,
   });
 
   return (
@@ -115,6 +121,66 @@ export const APIKeySettings = () => {
                 >
                   API 키 발급받기
                 </a>
+              </div>
+
+              <div className="api-key-group">
+                <label>Replicate API Key</label>
+                <div className="input-with-toggle">
+                  <input
+                    type={showKeys.replicate ? 'text' : 'password'}
+                    value={replicateApiKey}
+                    onChange={(e) => setReplicateApiKey(e.target.value)}
+                    placeholder="r8_..."
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowKeys({ ...showKeys, replicate: !showKeys.replicate })}
+                    className="toggle-visibility"
+                  >
+                    {showKeys.replicate ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <a
+                  href="https://replicate.com/account/api-tokens"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="api-key-link"
+                >
+                  API 키 발급받기
+                </a>
+                <small style={{ color: '#888', fontSize: '11px', marginTop: '4px', display: 'block' }}>
+                  Stable Diffusion, FLUX 등 이미지 생성 모델 사용 시 필요
+                </small>
+              </div>
+
+              <div className="api-key-group">
+                <label>Grok (xAI) API Key</label>
+                <div className="input-with-toggle">
+                  <input
+                    type={showKeys.grok ? 'text' : 'password'}
+                    value={grokApiKey}
+                    onChange={(e) => setGrokApiKey(e.target.value)}
+                    placeholder="xai-..."
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowKeys({ ...showKeys, grok: !showKeys.grok })}
+                    className="toggle-visibility"
+                  >
+                    {showKeys.grok ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <a
+                  href="https://console.x.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="api-key-link"
+                >
+                  API 키 발급받기
+                </a>
+                <small style={{ color: '#888', fontSize: '11px', marginTop: '4px', display: 'block' }}>
+                  xAI의 Grok 모델 사용 시 필요 (LLM)
+                </small>
               </div>
 
               <div className="modal-footer">

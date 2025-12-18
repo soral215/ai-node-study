@@ -18,7 +18,7 @@ export interface BaseNodeData {
 }
 
 export interface LLMNodeData extends BaseNodeData {
-  provider: 'openai' | 'anthropic' | 'gemini';
+  provider: 'openai' | 'anthropic' | 'gemini' | 'grok';
   model: string;
   prompt: string;
   temperature?: number;
@@ -42,11 +42,16 @@ export interface ConditionNodeData extends BaseNodeData {
 }
 
 export interface ImageNodeData extends BaseNodeData {
-  provider: 'dalle' | 'stable-diffusion';
+  provider: 'dalle' | 'stable-diffusion' | 'flux' | 'stable-diffusion-xl' | 'grok';
   prompt: string;
-  size?: '256x256' | '512x512' | '1024x1024' | '1024x1792' | '1792x1024';
-  quality?: 'standard' | 'hd';
+  size?: '256x256' | '512x512' | '1024x1024' | '1024x1536' | '1536x1024' | '1024x1792' | '1792x1024' | 'auto';
+  quality?: 'low' | 'medium' | 'high' | 'standard' | 'hd' | 'auto'; // GPT Image: low/medium/high/auto, DALL-E 3: standard/hd
   n?: number; // 생성할 이미지 개수
+  model?: string; // 모델 ID (gpt-image-1.5, gpt-image-1, gpt-image-1-mini, dall-e-3, dall-e-2 또는 Replicate 모델 ID)
+  background?: 'transparent' | 'opaque' | 'auto'; // GPT Image 모델만 지원
+  numOutputs?: number; // 생성할 이미지 개수 (Replicate용)
+  guidanceScale?: number; // 가이던스 스케일 (0-20)
+  numInferenceSteps?: number; // 추론 단계 수
 }
 
 // 워크플로우 실행 상태

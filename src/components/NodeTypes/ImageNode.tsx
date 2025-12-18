@@ -36,7 +36,13 @@ export const ImageNode = memo(({ data, id }: NodeProps<ImageNodeData>) => {
           {data.provider && (
             <div className="node-info">
               <span className="node-label">Provider:</span>
-              <span>{data.provider === 'dalle' ? 'DALL-E' : 'Stable Diffusion'}</span>
+              <span>
+                {data.provider === 'dalle' ? 'DALL-E 3' :
+                 data.provider === 'grok' ? 'Grok Imagine' :
+                 data.provider === 'flux' ? 'FLUX' :
+                 data.provider === 'stable-diffusion-xl' ? 'SDXL' :
+                 'Stable Diffusion'}
+              </span>
             </div>
           )}
           {data.size && (
