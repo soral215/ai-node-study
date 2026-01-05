@@ -43,3 +43,4 @@ export const NodeExecutionBadge = ({ nodeId }: NodeExecutionBadgeProps) => {
   );
 };
 
+

@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useWorkflowStore } from '../../stores/workflowStore';
 import { useExecutionStore } from '../../stores/executionStore';
+import { useAPIKeyStore } from '../../stores/apiKeyStore';
 import { X, Trash2, Eye } from 'lucide-react';
 import type { LLMNodeData, APINodeData, FunctionNodeData, ConditionNodeData, ImageNodeData } from '../../types';
 import { PromptEditor } from '../PromptEditor/PromptEditor';
+import type { LLMModel } from '../../utils/llmModels';
 import { getModelsForProvider, getDefaultModel } from '../../utils/llmModels';
+import { fetchProviderModels } from '../../services/modelCatalogService';
 import './NodeSettingsPanel.css';
 
 export const NodeSettingsPanel = () => {
@@ -83,6 +86,10 @@ const LLMSettings = ({ node }: { node: any }) => {
   const { updateNode } = useWorkflowStore();
   const [data, setData] = useState<LLMNodeData>(node.data as LLMNodeData);
   const [customModel, setCustomModel] = useState(false);
+  const { openaiApiKey, geminiApiKey, grokApiKey } = useAPIKeyStore();
+  const [remoteModels, setRemoteModels] = useState<LLMModel[]>([]);
+  const [isRefreshingModels, setIsRefreshingModels] = useState(false);
+  const [refreshModelsError, setRefreshModelsError] = useState<string | null>(null);
 
   useEffect(() => {
     setData(node.data as LLMNodeData);
@@ -91,6 +98,38 @@ const LLMSettings = ({ node }: { node: any }) => {
     const hasModel = models.some(m => m.id === data.model);
     setCustomModel(!hasModel && !!data.model);
   }, [node.id, node.data]);
+
+  // Provider가 바뀌면 원격 모델 목록/에러를 초기화
+  useEffect(() => {
+    setRemoteModels([]);
+    setRefreshModelsError(null);
+    setIsRefreshingModels(false);
+  }, [data.provider]);
+
+  const mergeModels = (staticModels: LLMModel[], fetched: LLMModel[]) => {
+    const map = new Map<string, LLMModel>();
+    // static 우선
+    for (const m of staticModels) map.set(m.id, m);
+    for (const m of fetched) {
+      if (!map.has(m.id)) map.set(m.id, m);
+    }
+    return Array.from(map.values());
+  };
+
+  const refreshModels = async () => {
+    const provider = data.provider || 'openai';
+    setIsRefreshingModels(true);
+    setRefreshModelsError(null);
+    try {
+      const fetched = await fetchProviderModels(provider, { openaiApiKey, geminiApiKey, grokApiKey });
+      setRemoteModels(fetched);
+    } catch (e: any) {
+      setRefreshModelsError(e?.message || '모델 목록을 새로고침할 수 없습니다.');
+      setRemoteModels([]);
+    } finally {
+      setIsRefreshingModels(false);
+    }
+  };
 
   const handleChange = (field: keyof LLMNodeData, value: any) => {
     const newData = { ...data, [field]: value };
@@ -116,7 +155,8 @@ const LLMSettings = ({ node }: { node: any }) => {
     }
   };
 
-  const availableModels = getModelsForProvider(data.provider || 'openai');
+  const staticModels = getModelsForProvider(data.provider || 'openai');
+  const availableModels = mergeModels(staticModels, remoteModels);
   const currentModel = data.model || '';
 
   return (
@@ -143,7 +183,28 @@ const LLMSettings = ({ node }: { node: any }) => {
         </select>
       </div>
       <div className="form-group">
-        <label>Model</label>
+        <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+          <span>Model</span>
+          <button
+            type="button"
+            onClick={refreshModels}
+            disabled={isRefreshingModels || (data.provider === 'anthropic')}
+            style={{
+              padding: '4px 10px',
+              background: isRefreshingModels ? '#2f2f2f' : '#3a3a3a',
+              border: '1px solid #4a4a4a',
+              color: '#ffffff',
+              borderRadius: '4px',
+              cursor: isRefreshingModels ? 'not-allowed' : 'pointer',
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              opacity: data.provider === 'anthropic' ? 0.5 : 1,
+            }}
+            title={data.provider === 'anthropic' ? 'Anthropic은 기본 모델 목록을 사용합니다.' : 'API에서 모델 목록 새로고침'}
+          >
+            {isRefreshingModels ? '새로고침 중…' : '모델 새로고침'}
+          </button>
+        </label>
         {!customModel ? (
           <select
             value={availableModels.some(m => m.id === currentModel) ? currentModel : ''}
@@ -192,6 +253,11 @@ const LLMSettings = ({ node }: { node: any }) => {
         {!customModel && availableModels.some(m => m.id === currentModel) && (
           <small style={{ color: '#888', fontSize: '11px', marginTop: '4px', display: 'block' }}>
             {availableModels.find(m => m.id === currentModel)?.description}
+          </small>
+        )}
+        {!!refreshModelsError && (
+          <small style={{ color: '#ff4444', fontSize: '11px', marginTop: '4px', display: 'block' }}>
+            {refreshModelsError}
           </small>
         )}
       </div>
