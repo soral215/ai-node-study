@@ -156,6 +156,8 @@ const LLMSettings = ({ node }: { node: any }) => {
   };
 
   const staticModels = getModelsForProvider(data.provider || 'openai');
+  const staticModelIds = new Set(staticModels.map((m) => m.id));
+  const remoteOnlyModels = remoteModels.filter((m) => !staticModelIds.has(m.id));
   const availableModels = mergeModels(staticModels, remoteModels);
   const currentModel = data.model || '';
 
@@ -211,11 +213,22 @@ const LLMSettings = ({ node }: { node: any }) => {
             onChange={(e) => handleModelChange(e.target.value)}
           >
             <option value="">모델 선택...</option>
-            {availableModels.map((model) => (
-              <option key={model.id} value={model.id}>
-                {model.name} {model.description ? `(${model.description})` : ''}
-              </option>
-            ))}
+            <optgroup label="기본 모델 (추천/스냅샷)">
+              {staticModels.map((model) => (
+                <option key={model.id} value={model.id}>
+                  {model.name} {model.description ? `(${model.description})` : ''}
+                </option>
+              ))}
+            </optgroup>
+            {remoteOnlyModels.length > 0 && (
+              <optgroup label="API에서 가져옴 (새로고침 결과)">
+                {remoteOnlyModels.map((model) => (
+                  <option key={model.id} value={model.id}>
+                    {model.name} {model.description ? `(${model.description})` : ''}
+                  </option>
+                ))}
+              </optgroup>
+            )}
             <option value="__custom__">+ 커스텀 모델 입력</option>
           </select>
         ) : (
